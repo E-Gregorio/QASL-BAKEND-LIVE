@@ -1,0 +1,405 @@
+{
+  "info": {
+    "name": "QASL Demo — API Testing Suite",
+    "_postman_id": "qasl-demo-001",
+    "description": "Colección de demostración QASL-BACKEND-LIVE. Pruebas contra APIs públicas para validar el dashboard en tiempo real.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://jsonplaceholder.typicode.com" },
+    { "key": "userId", "value": "" },
+    { "key": "postId", "value": "" },
+    { "key": "commentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 - Listar Usuarios",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/users",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Contiene lista de usuarios', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.be.an('array');",
+              "  pm.expect(body.length).to.be.greaterThan(0);",
+              "});",
+              "const body = pm.response.json();",
+              "if (body.length > 0) {",
+              "  pm.collectionVariables.set('userId', body[0].id);",
+              "  console.log('Usuario capturado: ' + body[0].name + ' (ID: ' + body[0].id + ')');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Detalle de Usuario",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/users/{{userId}}",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Contiene datos del usuario', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('id');",
+              "  pm.expect(body).to.have.property('name');",
+              "  pm.expect(body).to.have.property('email');",
+              "});",
+              "console.log('Usuario: ' + pm.response.json().name);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Crear Post",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/posts",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"QASL Test Post\", \"body\": \"Este post fue creado por QASL-BACKEND-LIVE para validar la creación de recursos via API.\", \"userId\": 1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', function() {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Post creado con ID', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('id');",
+              "  pm.expect(body.title).to.eql('QASL Test Post');",
+              "});",
+              "pm.collectionVariables.set('postId', pm.response.json().id);",
+              "console.log('Post creado con ID: ' + pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Obtener Post",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/posts/1",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Post contiene título y body', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property('title');",
+              "  pm.expect(body).to.have.property('body');",
+              "  pm.expect(body).to.have.property('userId');",
+              "});",
+              "console.log('Post: ' + pm.response.json().title);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Actualizar Post (PUT)",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/posts/1",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\": 1, \"title\": \"QASL Updated Post\", \"body\": \"Post actualizado por QASL-BACKEND-LIVE — Validación de método PUT exitosa.\", \"userId\": 1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Post actualizado correctamente', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.title).to.eql('QASL Updated Post');",
+              "});",
+              "console.log('Post actualizado: ' + pm.response.json().title);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Patch parcial Post",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/posts/1",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"QASL Patched Title\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Título parcheado correctamente', function() {",
+              "  pm.expect(pm.response.json().title).to.eql('QASL Patched Title');",
+              "});",
+              "console.log('Patch aplicado: ' + pm.response.json().title);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Listar Comentarios del Post",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/posts/1/comments",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Contiene array de comentarios', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.be.an('array');",
+              "  pm.expect(body.length).to.be.greaterThan(0);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('commentId', body[0].id);",
+              "console.log('Comentarios encontrados: ' + body.length);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Recurso No Encontrado (Error 404)",
+      "request": {
+        "method": "GET",
+        "url": "https://httpbin.org/status/404",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status ' + pm.response.code, function() {",
+              "  pm.response.to.have.status(404);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Respuesta contiene datos válidos', function() {",
+              "  pm.expect(pm.response.text()).to.not.be.empty;",
+              "});",
+              "console.log('Error 404 — Status: ' + pm.response.code);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Error del Servidor (Error 500)",
+      "request": {
+        "method": "POST",
+        "url": "https://httpbin.org/status/500",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"test\": \"QASL error simulation\", \"message\": \"Este request simula un error 500 del servidor\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status ' + pm.response.code, function() {",
+              "  pm.response.to.have.status(500);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "console.log('Error 500 — Status: ' + pm.response.code);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Listar TODOs",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/todos?_limit=10",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Retorna máximo 10 TODOs', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.be.an('array');",
+              "  pm.expect(body.length).to.be.at.most(10);",
+              "});",
+              "pm.test('TODOs tienen estructura correcta', function() {",
+              "  const todo = pm.response.json()[0];",
+              "  pm.expect(todo).to.have.property('userId');",
+              "  pm.expect(todo).to.have.property('title');",
+              "  pm.expect(todo).to.have.property('completed');",
+              "});",
+              "const todos = pm.response.json();",
+              "const done = todos.filter(t => t.completed).length;",
+              "console.log('TODOs: ' + done + '/' + todos.length + ' completados');"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Listar Albums",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/albums?userId=1",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Albums del usuario 1', function() {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.be.an('array');",
+              "  body.forEach(a => pm.expect(a.userId).to.eql(1));",
+              "});",
+              "console.log('Albums encontrados: ' + pm.response.json().length);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Eliminar Post",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/posts/1",
+        "header": []
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', function() {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response time < 5s', function() {",
+              "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+              "});",
+              "pm.test('Recurso eliminado correctamente', function() {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});",
+              "console.log('Post eliminado exitosamente');"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

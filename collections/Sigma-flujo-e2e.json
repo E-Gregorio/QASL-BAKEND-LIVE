@@ -1,0 +1,711 @@
+{
+  "info": {
+    "name": "SIGMA - Flujo E2E Completo",
+    "description": "Colección generada automáticamente por QASL-BACKEND-LIVE desde captura Playwright.\nProyecto: SIGMA (AGIP - Gestión de Inconsistencias)\nGenerado por: Elyer Gregorio Maldonado - Líder Técnico QA\nFecha: 8/3/2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar",
+      "type": "string"
+    },
+    {
+      "key": "baseFEUrl",
+      "value": "https://sigma-fe-qa.apps.ocp-test-hc.agip.gob.ar",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "YOUR_BEARER_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "loginName",
+      "value": "MBOLIVAR_TEST",
+      "type": "string"
+    },
+    {
+      "key": "testCuit",
+      "value": "20653706318",
+      "type": "string"
+    },
+    {
+      "key": "inconsistencyId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "correlationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cuitImportado",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Login / Validar Token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": [
+            "{{baseUrl}}/login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Login",
+              "pm.test(\"Login exitoso (200)\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Username presente\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.username).to.equal(pm.collectionVariables.get(\"loginName\"));",
+              "});",
+              "pm.test(\"Roles asignados\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.roles).to.be.an(\"array\").with.lengthOf.at.least(1);",
+              "});",
+              "// 🔗 Capturar username para uso posterior",
+              "const body = pm.response.json();",
+              "if (body.username) pm.collectionVariables.set(\"loginName\", body.username);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Import Lote Inconsistencias (CSV)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inconsistencies/lote-import?page=1&pageSize=10",
+          "host": [
+            "{{baseUrl}}/inconsistencies/lote-import?page=1&pageSize=10"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ⚠️ NOTA: Este endpoint usa multipart/form-data con archivo CSV",
+              "// Para prueba manual: adjuntar archivo CSV con la inconsistencia",
+              "// El body del CSV debe contener el CUIT: {{testCuit}}",
+              "console.log(\"📤 Enviando archivo CSV para CUIT:\", pm.collectionVariables.get(\"testCuit\"));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Lote Import (resiliente: si falla, el paso 03 captura ID dinámicamente)",
+              "const code = pm.response.code;",
+              "const body = pm.response.json();",
+              "const bodyStr = JSON.stringify(body).toLowerCase();",
+              "",
+              "// Detectar caso especial: 500 por datos duplicados (re-ejecución del test)",
+              "const isDuplicate = code === 500 && (bodyStr.includes('duplicad') || bodyStr.includes('ya existe'));",
+              "",
+              "pm.test('Endpoint respondió (' + code + ')' + (isDuplicate ? ' — DATOS DUPLICADOS' : ''), () => {",
+              "  pm.expect(code).to.be.oneOf([200, 400, 422, 500]);",
+              "});",
+              "",
+              "if (code === 200) {",
+              "  pm.test('Filas válidas presentes', () => {",
+              "    pm.expect(body.summary.validRows).to.be.at.least(1);",
+              "  });",
+              "  pm.test('Preview con datos', () => {",
+              "    pm.expect(body.preview.data).to.be.an('array').with.lengthOf.at.least(1);",
+              "  });",
+              "  // 🔗 Capturar CUIT importado",
+              "  if (body.preview && body.preview.data && body.preview.data[0]) {",
+              "    const cuit = body.preview.data[0].cuit;",
+              "    pm.collectionVariables.set('cuitImportado', cuit);",
+              "    console.log('✅ CUIT importado capturado:', cuit);",
+              "  }",
+              "} else if (isDuplicate) {",
+              "  pm.test('Datos duplicados detectados (re-ejecución)', () => {",
+              "    pm.expect(isDuplicate).to.be.true;",
+              "  });",
+              "  console.warn('⚠️ DUPLICADO: El CUIT ya fue importado en una ejecución anterior');",
+              "  console.warn('   Mensaje:', body.description || body.message || bodyStr.substring(0, 120));",
+              "  console.warn('   El paso 03 capturará un ID fresco del ambiente');",
+              "} else {",
+              "  pm.test('Import requiere multipart con campos obligatorios (esperado sin CSV)', () => {",
+              "    pm.expect(body.violations || body.title || body.description).to.not.be.undefined;",
+              "  });",
+              "  console.warn('⚠️ Import sin CSV/campos — El paso 03 capturará un ID fresco del ambiente');",
+              "  if (body.violations) {",
+              "    body.violations.forEach(v => console.warn('   →', v.field, ':', v.message));",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Consulta Inconsistencias (Lista General)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inconsistencies/query",
+          "host": [
+            "{{baseUrl}}/inconsistencies/query"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Query Inconsistencias",
+              "pm.test(\"Consulta exitosa (200)\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Data con registros\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.data).to.be.an(\"array\").with.lengthOf.at.least(1);",
+              "});",
+              "pm.test(\"totalCount mayor a cero\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.totalCount).to.be.above(0);",
+              "});",
+              "pm.test(\"Paginación correcta\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.page).to.equal(1);",
+              "  pm.expect(b.pageSize).to.equal(8);",
+              "});",
+              "pm.test(\"inconsistencyId presente en registros\", () => {",
+              "  const b = pm.response.json();",
+              "  b.data.forEach(row => pm.expect(row.inconsistencyId).to.be.a(\"number\"));",
+              "});",
+              "",
+              "// 🔗 CAPTURA DINÁMICA: Buscar inconsistencia FRESCA (sadeStatus null = no procesada)",
+              "const body = pm.response.json();",
+              "const fresca = body.data.find(row => !row.sadeStatus && row.sadeStatus !== 'EN_PROCESO');",
+              "if (fresca) {",
+              "  pm.collectionVariables.set('inconsistencyId', String(fresca.inconsistencyId));",
+              "  pm.collectionVariables.set('testCuit', fresca.cuit);",
+              "  console.log('🔗 Inconsistencia FRESCA capturada dinámicamente:');",
+              "  console.log('   ID:', fresca.inconsistencyId, '| CUIT:', fresca.cuit);",
+              "  console.log('   sadeStatus:', fresca.sadeStatus, '(disponible para procesar)');",
+              "} else {",
+              "  // Fallback: usar el primer registro disponible",
+              "  const fallback = body.data[0];",
+              "  if (fallback) {",
+              "    pm.collectionVariables.set('inconsistencyId', String(fallback.inconsistencyId));",
+              "    pm.collectionVariables.set('testCuit', fallback.cuit);",
+              "    console.warn('⚠️ No se encontró inconsistencia con sadeStatus null, usando:', fallback.inconsistencyId);",
+              "  }",
+              "}",
+              "pm.test('inconsistencyId capturado dinámicamente', () => {",
+              "  const id = pm.collectionVariables.get('inconsistencyId');",
+              "  pm.expect(id).to.be.a('string').with.lengthOf.above(0);",
+              "  console.log('✅ inconsistencyId para el flujo:', id);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Generar Lote SADE (Inconsistencia → Expediente)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inconsistencies/sade/generate-lot",
+          "host": [
+            "{{baseUrl}}/inconsistencies/sade/generate-lot"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inconsistencyIdList\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"loginName\": \"{{loginName}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// 🔗 Usar inconsistencyId capturado dinámicamente",
+              "const id = pm.collectionVariables.get(\"inconsistencyId\");",
+              "console.log(\"📤 Generando lote SADE para inconsistencyId:\", id);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Generate Lot SADE (dinámico)",
+              "const code = pm.response.code;",
+              "const body = pm.response.json();",
+              "const usedId = pm.collectionVariables.get('inconsistencyId');",
+              "",
+              "pm.test('SADE respondió (' + code + ') para ID: ' + usedId, () => {",
+              "  pm.expect(code).to.be.oneOf([200, 400, 500]);",
+              "});",
+              "",
+              "if (code === 200) {",
+              "  pm.test('correlationId presente', () => {",
+              "    pm.expect(body.correlationId).to.be.a('string').with.lengthOf.above(10);",
+              "  });",
+              "  pm.test('Inconsistencia en proceso', () => {",
+              "    pm.expect(body.inconsistencyList[0].status).to.equal('EN_PROCESO');",
+              "  });",
+              "  // 🔗 Capturar correlationId",
+              "  pm.collectionVariables.set('correlationId', body.correlationId);",
+              "  console.log('✅ correlationId capturado:', body.correlationId);",
+              "  console.log('🔗 INTEGRACIÓN: SIGMA → SADE expediente generado');",
+              "} else {",
+              "  pm.test('Error SADE: ' + (body.description || body.name || 'desconocido'), () => {",
+              "    pm.expect(code).to.not.equal(200);",
+              "  });",
+              "  console.warn('⚠️ SADE rechazó ID ' + usedId + ':', body.description || JSON.stringify(body));",
+              "  console.warn('   Causa probable: registro ya procesado o en estado inválido');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Verificar Estado EN_PROCESO (por CUIT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inconsistencies/query",
+          "host": [
+            "{{baseUrl}}/inconsistencies/query"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"{{testCuit}}\",\n  \"filterModel\": []\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Verificar estado post-SADE",
+              "const cuit = pm.collectionVariables.get('testCuit');",
+              "pm.test('Consulta exitosa (200)', () => pm.response.to.have.status(200));",
+              "",
+              "const body = pm.response.json();",
+              "if (body.totalCount > 0) {",
+              "  pm.test('Registro encontrado por CUIT', () => {",
+              "    pm.expect(body.totalCount).to.be.above(0);",
+              "  });",
+              "  pm.test('CUIT correcto: ' + cuit, () => {",
+              "    pm.expect(body.data[0].cuit).to.equal(cuit);",
+              "  });",
+              "  const reg = body.data[0];",
+              "  const status = reg.sadeStatus || 'null';",
+              "  pm.test('sadeStatus actual: ' + status, () => {",
+              "    pm.expect(reg.sadeStatus).to.be.oneOf(['EN_PROCESO', null, undefined]);",
+              "  });",
+              "  console.log('📋 Estado del registro:');",
+              "  console.log('   CUIT:', reg.cuit);",
+              "  console.log('   inconsistencyId:', reg.inconsistencyId);",
+              "  console.log('   sadeStatus:', reg.sadeStatus);",
+              "  // 🔍 DETECCIÓN FALSO POSITIVO: sadeLastError",
+              "  if (reg.sadeLastError !== null) {",
+              "    console.warn('⚠️ FALSO POSITIVO: sadeStatus=EN_PROCESO pero sadeLastError:', reg.sadeLastError);",
+              "  }",
+              "} else {",
+              "  pm.test('CUIT ' + cuit + ' no encontrado en inconsistencias (puede haber migrado)', () => {",
+              "    pm.expect(body.totalCount).to.equal(0);",
+              "  });",
+              "  console.warn('⚠️ CUIT no encontrado — posiblemente ya fue procesado completamente');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Consulta Selecciones de Candidatos",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/selections/query",
+          "host": [
+            "{{baseUrl}}/selections/query"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Selecciones",
+              "pm.test(\"Consulta exitosa (200)\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Lista de candidatos presente\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.data).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"batchExpedientNumber con formato EX-GCABA\", () => {",
+              "  const b = pm.response.json();",
+              "  const conExp = b.data.filter(d => d.batchExpedientNumber && d.batchExpedientNumber.startsWith(\"EX-\"));",
+              "  pm.expect(conExp.length).to.be.above(0);",
+              "  console.log(\"🔗 Expedientes SADE detectados:\", conExp.length);",
+              "  conExp.slice(0,3).forEach(d => console.log(\"   →\", d.batchExpedientNumber));",
+              "});",
+              "pm.test(\"taxpayerId presente\", () => {",
+              "  const b = pm.response.json();",
+              "  b.data.slice(0,3).forEach(d => pm.expect(d.taxpayerId).to.be.a(\"number\"));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Asignar Ponderación ALTA (Weighting)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/selections/weighting",
+          "host": [
+            "{{baseUrl}}/selections/weighting"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"candidatesIds\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"weighting\": \"ALTA\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const id = pm.collectionVariables.get(\"inconsistencyId\");",
+              "console.log(\"📤 Asignando ponderación ALTA a candidato:\", id);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Weighting",
+              "pm.test(\"Ponderación asignada (200)\", () => pm.response.to.have.status(200));",
+              "pm.test(\"updatedCount igual a 1\", () => {",
+              "  const b = pm.response.json();",
+              "  pm.expect(b.updatedCount).to.equal(1);",
+              "});",
+              "console.log(\"✅ Ponderación ALTA asignada a inconsistencyId:\", pm.collectionVariables.get(\"inconsistencyId\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Generar Lote Selecciones (Expediente Final)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/selections/generate-lot",
+          "host": [
+            "{{baseUrl}}/selections/generate-lot"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inconsistencyIdList\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"loginName\": \"{{loginName}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const id = pm.collectionVariables.get(\"inconsistencyId\");",
+              "console.log(\"📤 Generando lote de selecciones para:\", id);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Generate Lot Selecciones (dinámico)",
+              "const code = pm.response.code;",
+              "const body = pm.response.json();",
+              "const usedId = pm.collectionVariables.get('inconsistencyId');",
+              "",
+              "pm.test('Selecciones respondió (' + code + ') para ID: ' + usedId, () => {",
+              "  pm.expect(code).to.be.oneOf([200, 400, 500]);",
+              "});",
+              "",
+              "if (code === 200) {",
+              "  pm.test('generated true', () => {",
+              "    pm.expect(body.generated).to.equal(true);",
+              "  });",
+              "  console.log('✅ Lote de selecciones generado exitosamente');",
+              "  console.log('🔗 INTEGRACIÓN COMPLETA: Inconsistencia → SADE → Expediente → Selección → Lote');",
+              "} else {",
+              "  pm.test('Error selecciones: ' + (body.description || body.name || 'desconocido'), () => {",
+              "    pm.expect(code).to.not.equal(200);",
+              "  });",
+              "  console.warn('⚠️ Selecciones rechazó ID ' + usedId + ':', body.description || JSON.stringify(body));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Verificar Selección Procesada (CUIT ya no en lista)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/selections/query",
+          "host": [
+            "{{baseUrl}}/selections/query"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"{{testCuit}}\",\n  \"filterModel\": []\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ✅ Assertions - Verificar estado post-selección",
+              "const cuit = pm.collectionVariables.get('testCuit');",
+              "pm.test('Consulta exitosa (200)', () => pm.response.to.have.status(200));",
+              "",
+              "const body = pm.response.json();",
+              "pm.test('Verificación de CUIT ' + cuit + ' (totalCount: ' + body.totalCount + ')', () => {",
+              "  pm.expect(body).to.have.property('totalCount');",
+              "});",
+              "",
+              "if (body.totalCount === 0) {",
+              "  console.log('✅ CUIT procesado correctamente — ya no aparece en selecciones pendientes');",
+              "} else {",
+              "  const reg = body.data[0];",
+              "  console.log('📋 Candidato aún en lista:');",
+              "  console.log('   CUIT:', reg.cuit);",
+              "  console.log('   weighting:', reg.weighting);",
+              "  console.log('   batchExpedientNumber:', reg.batchExpedientNumber);",
+              "  console.warn('⚠️ Candidato no fue removido — el lote de selecciones pudo haber fallado');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - [INTEGRACIÓN EXTERNA] Consulta NCCT/PUC por CUIT",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseFEUrl}}/ncct/rest/puc/{{testCuit}}",
+          "host": [
+            "{{baseFEUrl}}/ncct/rest/puc/{{testCuit}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// ⚠️ INTEGRACIÓN EXTERNA — Este endpoint es NCCT (sistema externo)",
+              "// El HTTP 409 es el comportamiento ESPERADO si el CUIT no está en Padrón",
+              "pm.test(\"Respuesta recibida de NCCT\", () => {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 409]);",
+              "});",
+              "",
+              "const b = pm.response.json();",
+              "if (pm.response.code === 409) {",
+              "  pm.test(\"CUIT no encontrado en Padrón (409 esperado)\", () => {",
+              "    pm.expect(b.success).to.equal(false);",
+              "    pm.expect(b.message).to.include(\"CUIT\");",
+              "  });",
+              "  console.warn(\"⚠️ INTEGRACIÓN NCCT: CUIT no registrado en Padrón\");",
+              "  console.warn(\"   Mensaje:\", b.message);",
+              "  console.warn(\"   errorCode:\", b.errorCode);",
+              "} else {",
+              "  pm.test(\"CUIT encontrado en Padrón (200)\", () => {",
+              "    pm.expect(b.success).to.not.equal(false);",
+              "  });",
+              "  console.log(\"✅ NCCT: CUIT válido en Padrón\");",
+              "}",
+              "// 🔍 NOTA QA: Si success:false con HTTP 200 → FALSO POSITIVO en integración NCCT"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

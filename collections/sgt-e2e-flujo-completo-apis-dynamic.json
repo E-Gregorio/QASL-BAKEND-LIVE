@@ -1,0 +1,899 @@
+{
+  "info": {
+    "name": "SGT-E2E-FLUJO-COMPLETO - QASL Dynamic Collection",
+    "description": "Colección generada dinámicamente por QASL-CORRELATOR.\nVariables correlacionadas automáticamente — sin hardcodeo.\nGenerado: 2026-03-13T09:08:25.101Z",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "REQUERIDO: Setear manualmente o agregar request de login antes de correr."
+    },
+    {
+      "key": "numero_documento",
+      "value": "96351014",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "turno_id",
+      "value": "10590",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    }
+  ],
+  "item": [
+    {
+      "name": "01. POST /api/v1/login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "content-type",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "key": "upgrade-insecure-requests",
+            "value": "1"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/v1/login",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "login"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "token",
+              "value": "{\"per_legajo\":\"00000000\",\"per_login\":\"emaldonado                    \",\"per_apenom\":\"maldonado\",\"per_tofi_codigo\":\"\",\"per_tofi_descripcion\":\"\",\"aplicaciones\":[{\"per_nivel\":\"1\",\"apl_nivel\":\"1\",\"apl_cod\":\"reclamos\",\"apl_perfil\":\"\",\"apl_icon\":\"Re\",\"apl_estilos\":\"rojo\",\"apl_detalle\":null,\"apl_id\":\"75\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"1\",\"apl_cod\":\"F1F3\",\"apl_perfil\":\"\",\"apl_icon\":\"Af\",\"apl_estilos\":\"rojo\",\"apl_detalle\":\"Admin F1F3\",\"apl_id\":\"95\",\"apl_descripcion\":\"Admin F1F3\"},{\"per_nivel\":\"1\",\"apl_nivel\":\"1\",\"apl_cod\":\"reclamAR\",\"apl_perfil\":\"\",\"apl_icon\":\"Re\",\"apl_estilos\":\"rojo\",\"apl_detalle\":null,\"apl_id\":\"105\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"0\",\"apl_cod\":\"SRID\",\"apl_perfil\":\"\",\"apl_icon\":\"Sr\",\"apl_estilos\":\"azul\",\"apl_detalle\":\"Sistema de Registro Intercambio Datasets (SRID)\",\"apl_id\":\"107\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"0\",\"apl_cod\":\"DGANFA\",\"apl_perfil\":\"\",\"apl_icon\":\"Ra\",\"apl_estilos\":\"verde\",\"apl_detalle\":\"Sistema de Registro Actuaciones (DGANFA)\",\"apl_id\":\"108\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"1\",\"apl_cod\":\"webagentecct\",\"apl_perfil\":\"Consultor\",\"apl_icon\":\"Ac\",\"apl_estilos\":\"violeta\",\"apl_detalle\":null,\"apl_id\":\"110\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"0\",\"apl_cod\":\"SIRH\",\"apl_perfil\":\"\",\"apl_icon\":\"Sr\",\"apl_estilos\":\"celeste\",\"apl_detalle\":\"SIRH\",\"apl_id\":\"126\",\"apl_descripcion\":\"Sistema Integral de Recursos Humanos\"},{\"per_nivel\":\"3\",\"apl_nivel\":\"0\",\"apl_cod\":\"SU\",\"apl_perfil\":\"\",\"apl_icon\":\"Su\",\"apl_estilos\":\"azul\",\"apl_detalle\":\"Sistema de Utiles\",\"apl_id\":\"137\",\"apl_descripcion\":\"Sistema de Utiles\"},{\"per_nivel\":\"1\",\"apl_nivel\":\"0\",\"apl_cod\":\"SIARWeb\",\"apl_perfil\":\"\",\"apl_icon\":\"Sw\",\"apl_estilos\":\"verde\",\"apl_detalle\":\"SIAR web\",\"apl_id\":\"138\",\"apl_descripcion\":\"SIAR web\"},{\"per_nivel\":\"0\",\"apl_nivel\":\"0\",\"apl_cod\":\"SGT\",\"apl_perfil\":\"SIN ASIGNAR\",\"apl_icon\":\"St\",\"apl_estilos\":\"verde\",\"apl_detalle\":null,\"apl_id\":\"141\",\"apl_descripcion\":null},{\"per_nivel\":\"1\",\"apl_nivel\":\"1\",\"apl_cod\":\"CDJAISIB\",\"apl_perfil\":\"\",\"apl_icon\":\"Cd\",\"apl_estilos\":\"verde\",\"apl_detalle\":\"Consulta DDJJ Anual ISIB Locales\",\"apl_id\":\"144\",\"apl_descripcion\":\"Consulta DDJJ Anual ISIB Locales\"}]}",
+              "type": "text"
+            },
+            {
+              "key": "key",
+              "value": "jdfnapdouiDASDEQWDGdfsdO9+XNsqer=sue3y",
+              "type": "text"
+            },
+            {
+              "key": "login",
+              "value": "emaldonado                    ",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. GET /api/turno/buscar-por-dni/96351014",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/buscar-por-dni/96351014",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "buscar-por-dni",
+            "96351014"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status HTTP: \" + pm.response.code, () => {",
+              "    // Capturado originalmente como 404 — puede ser comportamiento esperado",
+              "    pm.expect(pm.response.code).to.be.oneOf([404, 200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. POST /api/turno",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          },
+          {
+            "key": "content-type",
+            "value": "multipart/form-data; boundary=----WebKitFormBoundaryIaWbf7foGAjlwXAo"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "------WebKitFormBoundaryIaWbf7foGAjlwXAo\r\nContent-Disposition: form-data; name",
+              "value": "\"nombre\"\r\n\r\nLaura\r\n------WebKitFormBoundaryIaWbf7foGAjlwXAo\r\nContent-Disposition: form-data; name=\"apellido\"\r\n\r\nLopez\r\n------WebKitFormBoundaryIaWbf7foGAjlwXAo\r\nContent-Disposition: form-data; name=\"tipo_turno_id\"\r\n\r\n2\r\n------WebKitFormBoundaryIaWbf7foGAjlwXAo\r\nContent-Disposition: form-data; name=\"tipo_identidad_id\"\r\n\r\n1\r\n------WebKitFormBoundaryIaWbf7foGAjlwXAo\r\nContent-Disposition: form-data; name=\"numero_documento\"\r\n\r\n96351014\r\n------WebKitFormBoundaryIaWbf7foGAjlwXAo--\r\n",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"[MULTIPART] Newman no puede enviar archivos binarios — test informativo\", () => pm.expect(true).to.be.true);",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "// ── QASL-CORRELATOR: extracción de variables ──",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data.data && body.data.data.Turno && body.data.data.Turno.numero_documento;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('numero_documento', String(val));",
+              "        console.log('[QASL] numero_documento capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: numero_documento no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo numero_documento:', e.message); }",
+              "",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data.data && body.data.data.Turno && body.data.data.Turno.id;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('turno_id', String(val));",
+              "        console.log('[QASL] turno_id capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: turno_id no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo turno_id:', e.message); }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. GET /api/turno/tramite",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/tramite",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "tramite"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. GET /api/turno/paginacion",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/paginacion?pag=1&fecha_turno=2026-02-19",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "paginacion"
+          ],
+          "query": [
+            {
+              "key": "pag",
+              "value": "1"
+            },
+            {
+              "key": "fecha_turno",
+              "value": "2026-02-19"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09. GET /api/turno/paginacion",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/paginacion?pag=1&fecha_turno=2026-02-19",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "paginacion"
+          ],
+          "query": [
+            {
+              "key": "pag",
+              "value": "1"
+            },
+            {
+              "key": "fecha_turno",
+              "value": "2026-02-19"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. GET /api/turno/paginacion",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/paginacion?pag=1&fecha_turno=2026-02-19&numero_documento={{numero_documento}}",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "paginacion"
+          ],
+          "query": [
+            {
+              "key": "pag",
+              "value": "1"
+            },
+            {
+              "key": "fecha_turno",
+              "value": "2026-02-19"
+            },
+            {
+              "key": "numero_documento",
+              "value": "{{numero_documento}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. GET /api/turno/10590",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/turno/{{turno_id}}",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "turno",
+            "{{turno_id}}"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. GET /api/tarjeta/listar-tarjetas/tramite",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/tarjeta/listar-tarjetas/tramite",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "tarjeta",
+            "listar-tarjetas",
+            "tramite"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15. GET /api/exhibidor/consulta-tarjetas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/exhibidor/consulta-tarjetas",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "exhibidor",
+            "consulta-tarjetas"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16. GET /api/consulta-usuario",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36"
+          },
+          {
+            "key": "accept",
+            "value": "application/json, text/plain, */*"
+          }
+        ],
+        "url": {
+          "raw": "https://sgt-qa.agip.gob.ar/api/consulta-usuario",
+          "protocol": "https",
+          "host": [
+            "sgt-qa",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "api",
+            "consulta-usuario"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+{
+    "info": {
+        "name": "SGT AGIP - Modulo Recepcion",
+        "_postman_id": "sgt-agip-recepcion-001",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": "EP-002 | Modulo Recepcion - API Tests"
+    },
+    "item": [
+        {
+            "name": "Recepcion - Pagina Principal",
+            "item": [
+                {
+                    "name": "GET Recepcion Home",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/recepcion",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["recepcion"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tengo Turno",
+            "item": [
+                {
+                    "name": "GET Tengo Turno Page",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/recepcion/tengoturno",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["recepcion", "tengoturno"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "POST Verificar Turno - Codigo Valido",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/turnos/verificar",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "turnos", "verificar"]
+                        },
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"codigo\": \"{{codigoTurno}}\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status OK', function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 404]);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});",
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.test('Response has turno data', function () {",
+                                    "        const json = pm.response.json();",
+                                    "        pm.expect(json).to.be.an('object');",
+                                    "    });",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "POST Verificar Turno - Codigo Invalido",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/turnos/verificar",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "turnos", "verificar"]
+                        },
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"codigo\": \"99999999\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 404 o error controlado', function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Atencion Espontanea",
+            "item": [
+                {
+                    "name": "GET Atencion Espontanea Page",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/recepcion/espontanea",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["recepcion", "espontanea"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "POST Registrar Espontanea - Datos Validos",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/recepcion/espontanea",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "recepcion", "espontanea"]
+                        },
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"dni\": \"{{dni}}\", \"nombre\": \"{{nombre}}\", \"apellido\": \"{{apellido}}\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status OK', function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "POST Registrar Espontanea - Sin DNI",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/recepcion/espontanea",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "recepcion", "espontanea"]
+                        },
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"nombre\": \"Test\", \"apellido\": \"Prueba\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 400 - validacion', function () {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tramites",
+            "item": [
+                {
+                    "name": "GET Lista de Tramites",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/tramites",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "tramites"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response is array', function () {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json).to.be.an('array');",
+                                    "});",
+                                    "pm.test('Response time < 3s', function () {",
+                                    "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        { "key": "baseUrl", "value": "https://sgt-qa.agip.gob.ar" },
+        { "key": "codigoTurno", "value": "12345678" },
+        { "key": "dni", "value": "30123456" },
+        { "key": "nombre", "value": "Juan" },
+        { "key": "apellido", "value": "Perez" }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "name": "SGT AGIP - QA Environment",
+    "values": [
+        { "key": "baseUrl", "value": "https://sgt-qa.agip.gob.ar", "enabled": true },
+        { "key": "codigoTurno", "value": "12345678", "enabled": true },
+        { "key": "dni", "value": "30123456", "enabled": true },
+        { "key": "nombre", "value": "Juan", "enabled": true },
+        { "key": "apellido", "value": "Perez", "enabled": true },
+        { "key": "token", "value": "", "enabled": true }
+    ]
+}

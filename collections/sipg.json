@@ -1,0 +1,384 @@
+{
+  "info": {
+    "name": "Si.PQ - Gestion de Campos - API Collection",
+    "description": "Coleccion generada automaticamente desde el test E2E exploratorio.\nTotal: 5 requests en 4 carpetas.\nFecha: 2026-03-12T14:49:00.939Z\n\nQA Lead: Elyer Gregorio Maldonado - EPIDATA Consulting",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://sipq-dev-agentes.minseg.gob.ar",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "YOUR_BEARER_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "admin",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "YOUR_PASSWORD_HERE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - AUTH",
+      "description": "Autenticacion - Obtiene Bearer Token para toda la coleccion",
+      "item": [
+        {
+          "name": "01. POST /api/v1/auth/login/ - Obtener Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login exitoso - Status 200\", function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "console.log(\"========================================\");",
+                  "console.log(\"LOGIN RESPONSE\");",
+                  "console.log(\"Status: \" + pm.response.code);",
+                  "console.log(\"Keys: \" + Object.keys(jsonData).join(\", \"));",
+                  "console.log(\"========================================\");",
+                  "",
+                  "var token = (jsonData.tokens && jsonData.tokens.access_token) ||",
+                  "  jsonData.access || jsonData.token || jsonData.access_token ||",
+                  "  (jsonData.data && (jsonData.data.access || jsonData.data.token)) || \"\";",
+                  "",
+                  "if (token) {",
+                  "  pm.collectionVariables.set(\"bearerToken\", token);",
+                  "  console.log(\"Token capturado: \" + token.substring(0, 30) + \"...\");",
+                  "} else {",
+                  "  console.log(\"WARN: Token no encontrado. Keys: \" + Object.keys(jsonData).join(\", \"));",
+                  "}",
+                  "",
+                  "pm.test(\"Response time < 5s\", function() {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(5000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"{{username}}\",\"password\":\"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - NAVEGACION",
+      "description": "APIs capturadas en el paso NAVEGACION del flujo E2E",
+      "item": [
+        {
+          "name": "02. GET /api/v1/field-types/",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "console.log(\"========================================\");",
+                  "console.log(\"ENDPOINT: GET /api/v1/field-types/\");",
+                  "console.log(\"STATUS: \" + pm.response.code + \" \" + pm.response.status);",
+                  "console.log(\"TIEMPO: \" + pm.response.responseTime + \"ms\");",
+                  "try { console.log(\"BODY: \" + pm.response.text().substring(0, 300)); } catch(e) {}",
+                  "console.log(\"========================================\");",
+                  "",
+                  "pm.test(\"Status OK (2xx)\", function() {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time < 10s\", function() {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(10000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-encoding",
+                "value": "gzip, deflate, br, zstd"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-US"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/field-types/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "field-types"
+              ]
+            }
+          }
+        },
+        {
+          "name": "03. GET /api/v1/field-templates/",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "console.log(\"========================================\");",
+                  "console.log(\"ENDPOINT: GET /api/v1/field-templates/\");",
+                  "console.log(\"STATUS: \" + pm.response.code + \" \" + pm.response.status);",
+                  "console.log(\"TIEMPO: \" + pm.response.responseTime + \"ms\");",
+                  "try { console.log(\"BODY: \" + pm.response.text().substring(0, 300)); } catch(e) {}",
+                  "console.log(\"========================================\");",
+                  "",
+                  "pm.test(\"Status OK (2xx)\", function() {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time < 10s\", function() {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(10000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-encoding",
+                "value": "gzip, deflate, br, zstd"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-US"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/field-templates/?page=1&page_size=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "field-templates"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - VER_CAMPO",
+      "description": "APIs capturadas en el paso VER_CAMPO del flujo E2E",
+      "item": [
+        {
+          "name": "04. GET /api/v1/field-templates/69af180d60ebdb3d98c053a9/",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "console.log(\"========================================\");",
+                  "console.log(\"ENDPOINT: GET /api/v1/field-templates/69af180d60ebdb3d98c053a9/\");",
+                  "console.log(\"STATUS: \" + pm.response.code + \" \" + pm.response.status);",
+                  "console.log(\"TIEMPO: \" + pm.response.responseTime + \"ms\");",
+                  "try { console.log(\"BODY: \" + pm.response.text().substring(0, 300)); } catch(e) {}",
+                  "console.log(\"========================================\");",
+                  "",
+                  "pm.test(\"Status OK (2xx)\", function() {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time < 10s\", function() {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(10000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-encoding",
+                "value": "gzip, deflate, br, zstd"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-US"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/field-templates/69af180d60ebdb3d98c053a9/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "field-templates",
+                "69af180d60ebdb3d98c053a9"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - ACTIVAR_INACTIVAR",
+      "description": "APIs capturadas en el paso ACTIVAR_INACTIVAR del flujo E2E",
+      "item": [
+        {
+          "name": "05. PATCH /api/v1/field-templates/69af180d60ebdb3d98c053a9/",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "console.log(\"========================================\");",
+                  "console.log(\"ENDPOINT: PATCH /api/v1/field-templates/69af180d60ebdb3d98c053a9/\");",
+                  "console.log(\"STATUS: \" + pm.response.code + \" \" + pm.response.status);",
+                  "console.log(\"TIEMPO: \" + pm.response.responseTime + \"ms\");",
+                  "try { console.log(\"BODY: \" + pm.response.text().substring(0, 300)); } catch(e) {}",
+                  "console.log(\"========================================\");",
+                  "",
+                  "pm.test(\"Status OK (2xx)\", function() {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time < 10s\", function() {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(10000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-encoding",
+                "value": "gzip, deflate, br, zstd"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-US"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/field-templates/69af180d60ebdb3d98c053a9/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "field-templates",
+                "69af180d60ebdb3d98c053a9"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"69af180d60ebdb3d98c053a9\",\"state\":2}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

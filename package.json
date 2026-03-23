@@ -1,0 +1,36 @@
+{
+  "name": "qasl-backend-live",
+  "version": "1.0.0",
+  "description": "QASL-BACKEND-LIVE — Newman Live Dashboard para equipos de desarrollo",
+  "author": "Elyer Gregorio Maldonado — Líder Técnico QA <elyer@epidata.com.ar>",
+  "license": "MIT",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node run.js",
+    "server": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "install:browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "express": "^4.22.1",
+    "newman": "^6.2.2",
+    "playwright": "^1.58.2",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "qasl",
+    "newman",
+    "postman",
+    "live-dashboard",
+    "api-testing",
+    "backend-testing",
+    "playwright",
+    "websocket"
+  ]
+}

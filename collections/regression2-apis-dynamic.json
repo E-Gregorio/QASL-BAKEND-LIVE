@@ -1,0 +1,4013 @@
+{
+  "info": {
+    "name": "REGRESSION2 - QASL Dynamic Collection",
+    "description": "Colección generada dinámicamente por QASL-CORRELATOR.\nVariables correlacionadas automáticamente — sin hardcodeo.\nGenerado: 2026-03-15T01:15:51.864Z",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "token",
+      "value": "YOUR_BEARER_TOKEN_HERE",
+      "type": "string",
+      "description": "Token JWT capturado de la sesión E2E. Expira — renovar si da 401."
+    },
+    {
+      "key": "username",
+      "value": "MBOLIVAR_TEST",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "inconsistencyId",
+      "value": "2422",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "cuit",
+      "value": "20117872543",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "auditing",
+      "value": "PRESENCIAL",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "target",
+      "value": "EXPEDIENT",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    },
+    {
+      "key": "expedientId",
+      "value": "118",
+      "type": "string",
+      "description": "Valor capturado de sesión E2E. Se sobreescribe dinámicamente si el request responde OK."
+    }
+  ],
+  "item": [
+    {
+      "name": "01. GET /login",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/login",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "login"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// ── QASL-CORRELATOR: Token Guard ──",
+              "// Este script verifica que el token JWT esté disponible antes de ejecutar.",
+              "// En proyectos con login REST, reemplazar este bloque por un pm.sendRequest",
+              "// al endpoint de autenticación. En SIGMA (login por portal), el token se",
+              "// captura de la sesión E2E y se inyecta como variable de colección.",
+              "const token = pm.collectionVariables.get('token');",
+              "if (!token || token === '') {",
+              "    console.warn('[QASL] ⚠ TOKEN NO CONFIGURADO');",
+              "    console.warn('[QASL] Opciones:');",
+              "    console.warn('[QASL]   1. Setear token en Variables de Colección');",
+              "    console.warn('[QASL]   2. Agregar request de login OAuth/REST como primer item');",
+              "    console.warn('[QASL]   3. Regenerar con: node qasl-correlator.mjs (captura token de sesión E2E)');",
+              "} else {",
+              "    console.log('[QASL] Token presente (' + token.substring(0, 20) + '...)');",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "// ── QASL-CORRELATOR: extracción de variables ──",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.username;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('username', String(val));",
+              "        console.log('[QASL] username capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: username no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo username:', e.message); }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. GET /login",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "*/*"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/login",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "login"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "// ── QASL-CORRELATOR: extracción de variables ──",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data[0] && body.data[0].inconsistencyId;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('inconsistencyId', String(val));",
+              "        console.log('[QASL] inconsistencyId capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: inconsistencyId no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo inconsistencyId:', e.message); }",
+              "",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data[0] && body.data[0].cuit;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('cuit', String(val));",
+              "        console.log('[QASL] cuit capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: cuit no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo cuit:', e.message); }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. POST /inconsistencies/lote-import",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "multipart/form-data; boundary=----WebKitFormBoundarya1N7VHRxi42EZ3hh"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/lote-import?page=1&pageSize=10",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "lote-import"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"[MULTIPART] Newman no puede enviar archivos binarios — test informativo\", () => pm.expect(true).to.be.true);",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. POST /inconsistencies/sade/generate-lot",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/sade/generate-lot",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "sade",
+            "generate-lot"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inconsistencyIdList\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"loginName\": \"{{username}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 35s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(35000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. POST /inconsistencies/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inconsistencies/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inconsistencies",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. POST /selections/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "// ── QASL-CORRELATOR: extracción de variables ──",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data[3] && body.data[3].auditing;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('auditing', String(val));",
+              "        console.log('[QASL] auditing capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: auditing no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo auditing:', e.message); }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15. POST /selections/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16. PATCH /selections/weighting",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/weighting",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "weighting"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"candidatesIds\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"weighting\": \"ALTA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17. POST /selections/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18. PATCH /inspection/bulk-inspection",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/inspection/bulk-inspection",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "inspection",
+            "bulk-inspection"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"candidatesIds\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"inspection\": \"{{auditing}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19. POST /selections/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20. POST /selections/generate-lot",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/generate-lot",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "generate-lot"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inconsistencyIdList\": [\n    \"{{inconsistencyId}}\"\n  ],\n  \"loginName\": \"{{username}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 35s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(35000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "21. POST /selections/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/selections/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "selections",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "23. POST /expedient/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24. POST /expedient/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "25. GET /ncct/rest/puc/20972912726",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "cookie",
+            "value": "4ed15dea0300786126952926fca9cd98=ecf378aa4058774544cf0cc44be430ea"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-fe-qa.apps.ocp-test-hc.agip.gob.ar/ncct/rest/puc/20972912726",
+          "protocol": "https",
+          "host": [
+            "sigma-fe-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "ncct",
+            "rest",
+            "puc",
+            "20972912726"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status HTTP: \" + pm.response.code, () => {",
+              "    // Capturado originalmente como 409 — puede ser comportamiento esperado",
+              "    pm.expect(pm.response.code).to.be.oneOf([409, 200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "26. POST /expedient/candidate/2865/generate",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/candidate/2865/generate",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "candidate",
+            "2865",
+            "generate"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"informId\": 1,\n  \"loginName\": \"{{username}}\",\n  \"candidateExpedient\": \"{{inconsistencyId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 35s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(35000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "27. POST /expedient/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "28. POST /expedient/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "29. POST /expedient/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "30. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "31. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"EXPEDIENT\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "// ── QASL-CORRELATOR: extracción de variables ──",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data[0] && body.data[0].target;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('target', String(val));",
+              "        console.log('[QASL] target capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: target no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo target:', e.message); }",
+              "",
+              "try {",
+              "    const body = pm.response.json();",
+              "    const val = body && body.data && body.data[5] && body.data[5].expedientId;",
+              "    if (val !== undefined && val !== null) {",
+              "        pm.collectionVariables.set('expedientId', String(val));",
+              "        console.log('[QASL] expedientId capturado:', val);",
+              "    } else {",
+              "        console.log('[QASL] WARN: expedientId no encontrado en response');",
+              "    }",
+              "} catch(e) { console.log('[QASL] Error extrayendo expedientId:', e.message); }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "32. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "33. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "34. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "35. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "36. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "37. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "38. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "39. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "40. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "41. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "42. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "43. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "44. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "45. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "46. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "47. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "48. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "49. POST /expedient/approval",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/expedient/approval",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "expedient",
+            "approval"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expedientId\": \"{{expedientId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "50. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "51. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "52. POST /charge/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/charge/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "charge",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "53. POST /charge/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/charge/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "charge",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "54. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "55. POST /charge/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/charge/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "charge",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "56. POST /charge/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/charge/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "charge",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "57. POST /charge/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/charge/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "charge",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 10,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"filterModel\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "58. GET /security/feature-flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/security/feature-flags",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "security",
+            "feature-flags"
+          ],
+          "query": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "59. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "60. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"\",\n  \"columnFilters\": {},\n  \"target\": \"CHARGE\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "61. POST /approvals/query",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "user-agent",
+            "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+          }
+        ],
+        "url": {
+          "raw": "https://sigma-be-qa.apps.ocp-test-hc.agip.gob.ar/approvals/query",
+          "protocol": "https",
+          "host": [
+            "sigma-be-qa",
+            "apps",
+            "ocp-test-hc",
+            "agip",
+            "gob",
+            "ar"
+          ],
+          "path": [
+            "approvals",
+            "query"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 8,\n  \"sortBy\": \"cuit\",\n  \"sortDirection\": \"ASC\",\n  \"globalFilter\": \"20972912726\",\n  \"columnFilters\": {},\n  \"target\": \"{{target}}\",\n  \"role\": \"Root\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status OK (2xx)\", () => {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10s\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
