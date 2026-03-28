@@ -183,54 +183,80 @@ El dashboard detecta automaticamente cuando un endpoint retorna HTTP 200 pero el
 
 ---
 
-## Colecciones
+---
 
-### Coleccion Demo (`demo-qasl-tests.json`)
-Demuestra todas las capacidades del dashboard contra APIs publicas:
+## INGRID — Motor de Analisis Automatico
 
-| # | Nombre | Metodo | Endpoint | Status esperado |
-|---|--------|--------|----------|-----------------|
-| 01 | Listar Usuarios | GET | jsonplaceholder/users | 200 |
-| 02 | Detalle de Usuario | GET | jsonplaceholder/users/1 | 200 |
-| 03 | Crear Post | POST | jsonplaceholder/posts | 201 |
-| 04 | Obtener Post | GET | jsonplaceholder/posts/1 | 200 |
-| 05 | Actualizar Post | PUT | jsonplaceholder/posts/1 | 200 |
-| 06 | Patch parcial Post | PATCH | jsonplaceholder/posts/1 | 200 |
-| 07 | Listar Comentarios | GET | jsonplaceholder/posts/1/comments | 200 |
-| 08 | Recurso No Encontrado | GET | httpbin.org/status/404 | 404 |
-| 09 | Error del Servidor | POST | httpbin.org/status/500 | 500 |
-| 10 | Listar TODOs | GET | jsonplaceholder/todos | 200 |
-| 11 | Listar Albums | GET | jsonplaceholder/albums | 200 |
-| 12 | Eliminar Post | DELETE | jsonplaceholder/posts/1 | 200 |
+Al finalizar cada ejecucion, INGRID analiza automaticamente todos los requests y genera un diagnostico inteligente sin configuracion previa.
 
-Cubre: GET, POST, PUT, PATCH, DELETE, errores 4xx/5xx, assertions y validaciones.
+### Patrones detectados automaticamente:
+| Tipo | Severidad | Descripcion |
+|------|-----------|-------------|
+| `BUG` | CRITICO | NullPointerException o errores no controlados en backend |
+| `INTEGRACION` | ALTO | Fallas en servicios externos (SADE, NCCT, etc.) |
+| `ERROR` | ALTO | HTTP 500 generico |
+| `DUPLICADO` | INFO | HTTP 500 por datos duplicados (re-ejecucion de test) |
+| `VALIDACION` | MEDIO | HTTP 400 con violations del contrato API |
+| `TIMEOUT` | CRITICO | HTTP 504 Gateway Timeout |
+| `TEST_FAIL` | ALTO | Assertions que fallaron |
+| `ASYNC` | INFO | Respuesta vacia (data:[], totalCount:0) — procesamiento pendiente |
+| `NEGOCIO` | ALTO | Regla de negocio incumplida: data vacia por dependencia SADE |
+| `FALSO_POSITIVO` | MEDIO | HTTP 200 pero body contiene error:true o success:false |
+| `PERFORMANCE` | MEDIO | Response time > 10 segundos |
+| `SADE_LATENCY` | INFO/MEDIO | SADE proceso pero tardo mas de lo esperado |
+| `SADE_TIMEOUT` | CRITICO | SADE no proceso dentro del tiempo limite |
+| `SADE_SKIP` | INFO | Fase SADE omitida por dependencia previa fallida |
+| `SADE_CASCADE` | ALTO | Requests fallidos en cascada por timeout SADE |
 
-### Coleccion SIGMA E2E (`Sigma-flujo-e2e.json`)
-Flujo end-to-end real contra el sistema SIGMA (AGIP) en ambiente QA. Demuestra capacidades avanzadas:
+### Reporte INGRID incluye:
+- **Nivel de riesgo**: BAJO / MEDIO / ALTO (calculado automaticamente)
+- **Conteo PASS / WARN / FAIL**: resolucion por request considerando assertions + HTTP status + reglas de negocio
+- **SADE Timeline**: barras de progreso para cada fase de polling asincrono
+- **Recomendaciones**: texto automatico con acciones a tomar segun los hallazgos
 
-| # | Nombre | Metodo | Sistemas | Funcionalidad |
-|---|--------|--------|----------|---------------|
-| 01 | Login SSO | POST | SSO | Autenticacion OAuth, captura JWT |
-| 02 | Import CSV Preview | POST | SIGMA-BE | Importacion de archivo CSV |
-| 03 | Query Inconsistencies | POST | SIGMA-BE | Busqueda con captura dinamica de ID |
-| 04 | Generate SADE Lot | POST | SIGMA-BE | Generacion de lote SADE |
-| 05 | Verify EN_PROCESO | POST | SIGMA-BE | Verificacion de estado SADE |
-| 06 | PUC Taxpayer Query | GET | PUC | Consulta externa al padron (NCCT) |
-| 07 | Regime Info | GET | SIGMA-BE | Informacion de regimen fiscal |
-| 08 | Generate Lot Selection | POST | SIGMA-BE | Generacion de lote seleccion |
-| 09 | Verify Selection | POST | SIGMA-BE | Verificacion de seleccion |
-| 10 | FE Smoke Test | GET | SIGMA-FE | Health check del frontend |
+---
 
-**Caracteristicas dinamicas:**
-- Captura automatica de `inconsistencyId` fresco (con `sadeStatus: null`) en el request 03
-- Propagacion dinamica del ID a requests dependientes (04, 05, 08, 09)
-- Tests resilientes: aceptan multiples status codes y adaptan assertions segun la respuesta real
-- Deteccion de 3+ sistemas: SSO, SIGMA-BE, SIGMA-FE, PUC
-- Flujos cross-system visibles en el mapa de integraciones (JWT fluye de SSO a SIGMA-BE)
+## Colecciones Probadas (Universalidad)
+
+QASL-BACKEND-LIVE es **completamente universal** — ejecuta cualquier coleccion Postman sin configuracion. Ha sido probado exitosamente con:
+
+### Demo — APIs Publicas (`demo-qasl-tests.json`)
+- **12 requests** | 11 PASS, 1 FAIL
+- Endpoints: jsonplaceholder.typicode.com, httpbin.org
+- Cubre: GET, POST, PUT, PATCH, DELETE, errores 4xx/5xx
+
+### SIGMA QA — Gobierno AGIP (`Sigma-flujo-e2e.json`)
+- **10 requests** | Flujo E2E completo
+- Sistemas: SSO, SIGMA-BE, SIGMA-FE, PUC (NCCT)
+- Features: captura dinamica de IDs, propagacion entre requests, deteccion de 4 sistemas
+
+### SIGMA HML — Homologacion (`SIGMA-HML-E2E-Flujo-Completo-09032026.postman_collection.json`)
+- **15+ requests** | Flujo E2E con SADE polling
+- Features: espera SADE 40s, polling con reintentos, deteccion SKIP/TIMEOUT/CASCADE
+- Diagnostico SADE Timeline + INGRID NEGOCIO
+
+### SIGMA Regression (`regression2-apis-dynamic.json`)
+- **61 requests** | 57 PASS, 2 WARN, 2 FAIL
+- Coleccion de regresion completa generada por QASL-AUTOMATION
+- 120/122 assertions pasadas, 5+ minutos de ejecucion
+
+### Si.PQ — Gestion de Campos (`sipg.json`)
+- **5 requests** | 4 PASS, 1 FAIL
+- Backend: sipq-dev-agentes.minseg.gob.ar (Ministerio de Seguridad)
+- INGRID detecto bug en PATCH: 500 al intentar cambiar estado a uno ya existente
+
+### Binance — Crypto Exchange (`tomex-collection-1774685235867.json`)
+- **136 requests** | 134 PASS, 2 FAIL (response time)
+- **8+ sistemas detectados**: binance.com, accounts.binance.com, bin.bnbstatic.com, cdn.cookielaw.org, api.saasexch.co, google-analytics.com, sentry.io, awswaf.com
+- Coleccion generada por QASL-TOMEX (captura automatica de APIs en navegacion)
+- Cubre: auth, compliance, trading, futures, earn, fiat, copy-trading, news, chat, options, assets
 
 ```bash
-# Ejecutar con la coleccion SIGMA:
-node run.js Sigma-flujo-e2e.json --delay 5000
+# Ejecutar cualquier coleccion:
+node run.js --collection collections/mi-coleccion.json --delay 5000
+
+# Coleccion desde ruta externa:
+node run.js --collection "C:/ruta/a/coleccion.json" --delay 5000
 ```
 
 ---
@@ -321,10 +347,11 @@ Este modulo es parte del ecosistema **QASL (Quality Assurance Shift-Left)**:
 
 - `QASL` -- Framework principal Shift-Left
 - `QASL-BACKEND-LIVE` -- Observabilidad Newman en tiempo real (este)
-- `INGRID` -- AI/LLM Testing Framework
+- `QASL-TOMEX` -- Captura automatica de APIs desde navegacion web (genera colecciones para QASL-BACKEND-LIVE)
+- `INGRID` -- AI/LLM Testing Framework + Motor de Analisis integrado
 - `QASL-MONITOR` -- Dashboard unificado Grafana
 - `QASL-MOBILE` -- Mobile testing automation
 
 ---
 
-*Elyer Gregorio Maldonado - Lider Tecnico QA - EPIDATA Consulting - 2025*
+*Elyer Gregorio Maldonado - Lider Tecnico QA - EPIDATA Consulting - 2025/2026*
